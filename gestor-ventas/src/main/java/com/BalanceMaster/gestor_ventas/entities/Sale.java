@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.entities;
 
+import com.BalanceMaster.gestor_ventas.enums.PaymentMethod;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

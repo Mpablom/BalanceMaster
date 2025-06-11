@@ -1,4 +1,4 @@
-package com.BalanceMaster.gestor_ventas.entities;
+package com.BalanceMaster.gestor_ventas.enums;
 
 public enum PaymentMethod {
   CASH, CARD, TRANSFER
