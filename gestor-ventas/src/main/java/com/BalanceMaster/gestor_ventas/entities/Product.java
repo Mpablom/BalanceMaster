@@ -1,12 +1,8 @@
 package com.BalanceMaster.gestor_ventas.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "product")
+@Builder
 public class Product {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +31,8 @@ public class Product {
   @Column(name = "salePrice", nullable = false)
   private double salePrice;
 
-  @Column(name = "minimumStock", nullable = false)
-  private int minimumStock;
+  @Column(name = "minStock", nullable = false)
+  private int minStock;
 
   public double calculateProfit() {
     return salePrice - purchasePrice;

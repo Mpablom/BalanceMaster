@@ -1,4 +1,4 @@
-package com.BalanceMaster.gestor_ventas.dtos.customersDtos;
+package com.BalanceMaster.gestor_ventas.dtos.suppliersDtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CustomerResponseDTO {
+public class SupplierRequestDTO {
 
-  private Long id;
   private String name;
   private String contactInfo;
-  private Double creditLimit;
 }

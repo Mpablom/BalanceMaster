@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class CustomerRequestDTO {
 
   private String name;
-  private String contact;
+  private String contactInfo;
   private Double creditLimit;
 }
