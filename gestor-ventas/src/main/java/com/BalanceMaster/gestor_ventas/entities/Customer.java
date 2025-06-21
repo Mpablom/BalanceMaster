@@ -22,9 +22,10 @@ public class Customer {
   @Column(nullable = false)
   private String name;
 
+  @Column(name = "contact_info", nullable = true)
   private String contactInfo;
 
-  @Column(name = "creditLimit", nullable = false)
+  @Column(name = "credit_limit", nullable = false)
   private double creditLimit;
 
   @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -32,4 +33,9 @@ public class Customer {
 
   @OneToMany(mappedBy = "customer")
   private List<Sale> sales;
+
+  @Column(nullable = false)
+  @Builder.Default
+  private Boolean deleted = false;
+
 }

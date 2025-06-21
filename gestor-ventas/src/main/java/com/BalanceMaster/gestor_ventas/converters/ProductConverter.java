@@ -4,9 +4,11 @@ import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Product;
 
-public class ProductConverter {
-
-  public static ProductResponseDTO toDTO(Product product) {
+public class ProductConverter implements Converter<Product, ProductRequestDTO, ProductResponseDTO> {
+  @Override
+  public ProductResponseDTO toDTO(Product product) {
+    if (product == null)
+      return null;
     return ProductResponseDTO.builder()
         .id(product.getId())
         .barcode(product.getBarcode())
@@ -18,7 +20,10 @@ public class ProductConverter {
         .build();
   }
 
-  public static Product toEntity(ProductRequestDTO dto) {
+  @Override
+  public Product toEntity(ProductRequestDTO dto) {
+    if (dto == null)
+      return null;
     return Product.builder()
         .barcode(dto.getBarcode())
         .name(dto.getName())
@@ -26,6 +31,7 @@ public class ProductConverter {
         .purchasePrice(dto.getPurchasePrice())
         .salePrice(dto.getSalePrice())
         .minStock(dto.getMinStock())
+        .deleted(false)
         .build();
   }
 }

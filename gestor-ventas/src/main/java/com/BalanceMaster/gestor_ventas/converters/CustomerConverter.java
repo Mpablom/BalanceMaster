@@ -4,9 +4,11 @@ import com.BalanceMaster.gestor_ventas.dtos.customersDtos.CustomerRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.customersDtos.CustomerResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Customer;
 
-public class CustomerConverter {
-
-  public static CustomerResponseDTO toDTO(Customer customer) {
+public class CustomerConverter implements Converter<Customer, CustomerRequestDTO, CustomerResponseDTO> {
+  @Override
+  public CustomerResponseDTO toDTO(Customer customer) {
+    if (customer == null)
+      return null;
     return CustomerResponseDTO.builder()
         .id(customer.getId())
         .name(customer.getName())
@@ -15,11 +17,15 @@ public class CustomerConverter {
         .build();
   }
 
-  public static Customer toEntity(CustomerRequestDTO dto) {
+  @Override
+  public Customer toEntity(CustomerRequestDTO dto) {
+    if (dto == null)
+      return null;
     return Customer.builder()
         .name(dto.getName())
         .contactInfo(dto.getContactInfo())
         .creditLimit(dto.getCreditLimit())
+        .deleted(false)
         .build();
   }
 }

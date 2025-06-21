@@ -22,6 +22,7 @@ public class Supplier {
   @Column(nullable = false)
   private String name;
 
+  @Column(name = "contact_info", nullable = true)
   private String contactInfo;
 
   @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -29,4 +30,8 @@ public class Supplier {
 
   @OneToMany(mappedBy = "supplier")
   private List<Purchase> purchases;
+
+  @Column(nullable = false)
+  @Builder.Default
+  private Boolean deleted = false;
 }

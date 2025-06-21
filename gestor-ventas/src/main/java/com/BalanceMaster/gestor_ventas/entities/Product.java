@@ -17,22 +17,27 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "barcode", length = 50, unique = true, nullable = false)
+  @Column(name = "barcode", unique = true, nullable = true)
   private String barcode;
 
   @Column(nullable = false)
   private String name;
 
+  @Column(length = 255)
   private String description;
 
-  @Column(name = "purchasePrice", nullable = false)
+  @Column(name = "purchase_price", nullable = false)
   private double purchasePrice;
 
-  @Column(name = "salePrice", nullable = false)
+  @Column(name = "sale_price", nullable = false)
   private double salePrice;
 
-  @Column(name = "minStock", nullable = false)
+  @Column(name = "min_stock", nullable = false)
   private int minStock;
+
+  @Column(nullable = false)
+  @Builder.Default
+  private Boolean deleted = false;
 
   public double calculateProfit() {
     return salePrice - purchasePrice;
