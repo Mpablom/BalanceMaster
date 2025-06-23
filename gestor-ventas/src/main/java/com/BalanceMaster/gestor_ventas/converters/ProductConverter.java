@@ -4,6 +4,9 @@ import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Product;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ProductConverter implements Converter<Product, ProductRequestDTO, ProductResponseDTO> {
   @Override
   public ProductResponseDTO toDTO(Product product) {

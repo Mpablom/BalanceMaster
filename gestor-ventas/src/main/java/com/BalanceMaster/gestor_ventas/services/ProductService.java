@@ -1,16 +1,19 @@
 package com.BalanceMaster.gestor_ventas.services;
 
-import java.util.List;
-import java.util.Optional;
+import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
+import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
 
-import com.BalanceMaster.gestor_ventas.entities.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
-  List<Product> findAll();
+  ProductResponseDTO createProduct(ProductRequestDTO request);
 
-  Optional<Product> findById(Long id);
+  ProductResponseDTO updateProduct(Long id, ProductRequestDTO request);
 
-  Product save(Product product);
+  void deleteProduct(Long id);
 
-  void delete(Long id);
+  ProductResponseDTO getProductById(Long id);
+
+  Page<ProductResponseDTO> getAllProducts(Pageable pageable);
 }

@@ -33,7 +33,7 @@ public class Product {
   private double salePrice;
 
   @Column(name = "min_stock", nullable = false)
-  private int minStock;
+  private Integer minStock;
 
   @Column(nullable = false)
   @Builder.Default
