@@ -4,6 +4,9 @@ import com.BalanceMaster.gestor_ventas.dtos.customersDtos.CustomerRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.customersDtos.CustomerResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Customer;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CustomerConverter implements Converter<Customer, CustomerRequestDTO, CustomerResponseDTO> {
   @Override
   public CustomerResponseDTO toDTO(Customer customer) {

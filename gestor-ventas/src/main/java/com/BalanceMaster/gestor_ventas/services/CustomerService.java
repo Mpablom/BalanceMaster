@@ -1,12 +1,19 @@
 package com.BalanceMaster.gestor_ventas.services;
 
-import java.util.List;
+import com.BalanceMaster.gestor_ventas.dtos.customersDtos.CustomerRequestDTO;
+import com.BalanceMaster.gestor_ventas.dtos.customersDtos.CustomerResponseDTO;
 
-import com.BalanceMaster.gestor_ventas.entities.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CustomerService {
+  CustomerResponseDTO createCustomer(CustomerRequestDTO request);
 
-  List<Customer> findAll();
+  CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto);
 
-  Customer save(Customer customer);
+  void deleteCustomer(Long id);
+
+  CustomerResponseDTO getCustomerById(Long id);
+
+  Page<CustomerResponseDTO> getAllCustomers(Pageable pageable);
 }
