@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
   public ProductResponseDTO updateProduct(Long id, ProductRequestDTO request) {
     Product product = productRepository.findById(id)
         .filter(p -> !p.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
     product.setBarcode(request.getBarcode());
     product.setName(request.getName());
@@ -50,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
   public void deleteProduct(Long id) {
     Product product = productRepository.findById(id)
         .filter(p -> !p.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     product.setDeleted(true);
   }
 
@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
   public ProductResponseDTO getProductById(Long id) {
     Product product = productRepository.findById(id)
         .filter(p -> !p.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found "));
     return productConverter.toDTO(product);
   }
 

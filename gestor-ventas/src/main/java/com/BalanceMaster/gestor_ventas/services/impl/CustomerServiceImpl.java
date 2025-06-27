@@ -35,7 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
   public CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto) {
     Customer customer = customerRepository.findById(id)
         .filter(c -> !c.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
     customer.setName(dto.getName());
     customer.setContactInfo(dto.getContactInfo());
@@ -48,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
   public void deleteCustomer(Long id) {
     Customer customer = customerRepository.findById(id)
         .filter(c -> !c.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
     customer.setDeleted(true);
   }
 
@@ -57,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
   public CustomerResponseDTO getCustomerById(Long id) {
     Customer customer = customerRepository.findById(id)
         .filter(c -> !c.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
     return customerConverter.toDTO(customer);
   }
 

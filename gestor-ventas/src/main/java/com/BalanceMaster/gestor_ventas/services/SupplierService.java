@@ -1,12 +1,19 @@
 package com.BalanceMaster.gestor_ventas.services;
 
-import java.util.List;
+import com.BalanceMaster.gestor_ventas.dtos.suppliersDtos.SupplierRequestDTO;
+import com.BalanceMaster.gestor_ventas.dtos.suppliersDtos.SupplierResponseDTO;
 
-import com.BalanceMaster.gestor_ventas.entities.Supplier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface SupplierService {
+  SupplierResponseDTO createSupplier(SupplierRequestDTO dto);
 
-  List<Supplier> findAll();
+  SupplierResponseDTO updateSupplier(Long id, SupplierRequestDTO dto);
 
-  Supplier save(Supplier supplier);
+  void deleteSupplier(Long id);
+
+  SupplierResponseDTO getSupplierById(Long id);
+
+  Page<SupplierResponseDTO> getAllSuppliers(Pageable pageable);
 }
