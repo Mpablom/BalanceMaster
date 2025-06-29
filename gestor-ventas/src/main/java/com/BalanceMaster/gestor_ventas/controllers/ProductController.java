@@ -27,24 +27,24 @@ public class ProductController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id,
+  public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long id,
       @Valid @RequestBody ProductRequestDTO request) {
     return ResponseEntity.ok(productService.updateProduct(id, request));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> delete(@PathVariable Long id) {
+  public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
     productService.deleteProduct(id);
     return ResponseEntity.ok("El producto fue eliminado correctamente.");
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
+  public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id) {
     return ResponseEntity.ok(productService.getProductById(id));
   }
 
   @GetMapping
-  public ResponseEntity<Page<ProductResponseDTO>> getAll(Pageable pageable) {
+  public ResponseEntity<Page<ProductResponseDTO>> getAllProducts(Pageable pageable) {
     return ResponseEntity.ok(productService.getAllProducts(pageable));
   }
 }

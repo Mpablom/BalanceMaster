@@ -4,6 +4,9 @@ import com.BalanceMaster.gestor_ventas.dtos.suppliersDtos.SupplierRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.suppliersDtos.SupplierResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Supplier;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class SupplierConverter implements Converter<Supplier, SupplierRequestDTO, SupplierResponseDTO> {
   @Override
   public SupplierResponseDTO toDTO(Supplier supplier) {
