@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 public class InventoryResponseDTO {
 
   private Long productId;
+  private String productName;
   private Integer quantity;
-  private LocalDateTime lastUpdate;
+  private String location;
+  private LocalDateTime lastUpdated;
 
 }

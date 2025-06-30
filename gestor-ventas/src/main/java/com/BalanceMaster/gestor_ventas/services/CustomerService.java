@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 public interface CustomerService {
   CustomerResponseDTO createCustomer(CustomerRequestDTO request);
 
-  CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO dto);
+  CustomerResponseDTO updateCustomer(Long id, CustomerRequestDTO request);
 
   void deleteCustomer(Long id);
 

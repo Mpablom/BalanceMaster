@@ -7,9 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface SupplierService {
-  SupplierResponseDTO createSupplier(SupplierRequestDTO dto);
+  SupplierResponseDTO createSupplier(SupplierRequestDTO request);
 
-  SupplierResponseDTO updateSupplier(Long id, SupplierRequestDTO dto);
+  SupplierResponseDTO updateSupplier(Long id, SupplierRequestDTO request);
 
   void deleteSupplier(Long id);
 
