@@ -3,7 +3,7 @@ package com.BalanceMaster.gestor_ventas.dtos.purchaseDtos;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemDTO;
+import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemResponseDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +16,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PurchaseResponseDTO {
   private String id;
-  private Long supplierId;
   private LocalDateTime date;
-  private List<TransactionItemDTO> items;
+  private double total;
+  private Long supplierId;
+  private String supplierName;
   private String invoiceNumber;
-  private Double total;
+  private List<TransactionItemResponseDTO> items;
 }
