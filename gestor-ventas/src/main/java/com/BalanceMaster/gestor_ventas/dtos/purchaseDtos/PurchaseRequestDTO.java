@@ -2,7 +2,7 @@ package com.BalanceMaster.gestor_ventas.dtos.purchaseDtos;
 
 import java.util.List;
 
-import com.BalanceMaster.gestor_ventas.dtos.purchaseItemsDtos.PurchaseItemDTO;
+import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemRequestDTO;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -24,5 +24,5 @@ public class PurchaseRequestDTO {
   private String invoiceNumber;
 
   @NotEmpty
-  private List<@Valid PurchaseItemDTO> items;
+  private List<@Valid TransactionItemRequestDTO> items;
 }
