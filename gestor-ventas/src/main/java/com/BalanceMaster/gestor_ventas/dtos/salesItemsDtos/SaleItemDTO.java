@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SaleItemDTO {
-  @NotNull
+  @NotNull(message = "Product ID is required")
   private Long productId;
 
-  @NotNull
-  @Min(1)
-  private Integer quantity;
+  @NotNull(message = "Amount is required")
+  @Min(value = 1, message = "Amount must be at least 1")
+  private Integer amount;
 
-  @NotNull
-  @Positive
-  private Double price;
+  @NotNull(message = "Unit price is required")
+  @Positive(message = "Unit price must be greater than 0")
+  private Double unitPrice;
 }

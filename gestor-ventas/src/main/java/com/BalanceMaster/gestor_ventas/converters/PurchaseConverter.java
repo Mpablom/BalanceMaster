@@ -24,6 +24,25 @@ public class PurchaseConverter {
   private final SupplierRepository supplierRepository;
   private final ProductRepository productRepository;
 
+  public PurchaseResponseDTO toDTO(Purchase purchase) {
+    return PurchaseResponseDTO.builder()
+        .id(purchase.getId())
+        .date(purchase.getDate())
+        .total(purchase.getTotal())
+        .supplierId(purchase.getSupplier().getId())
+        .supplierName(purchase.getSupplier().getName())
+        .invoiceNumber(purchase.getInvoiceNumber())
+        .items(purchase.getItems().stream().map(item -> TransactionItemResponseDTO.builder()
+            .id(item.getId())
+            .productId(item.getProduct().getId())
+            .productName(item.getProduct().getName())
+            .amount(item.getAmount())
+            .unitPrice(item.getUnitPrice())
+            .subtotal(item.getAmount() * item.getUnitPrice())
+            .build()).toList())
+        .build();
+  }
+
   public Purchase toEntity(PurchaseRequestDTO request) {
     Supplier supplier = supplierRepository.findById(request.getSupplierId())
         .orElseThrow(() -> new EntityNotFoundException("Supplier not found"));
@@ -51,24 +70,5 @@ public class PurchaseConverter {
         .sum());
 
     return purchase;
-  }
-
-  public PurchaseResponseDTO toDTO(Purchase purchase) {
-    return PurchaseResponseDTO.builder()
-        .id(purchase.getId())
-        .date(purchase.getDate())
-        .total(purchase.getTotal())
-        .supplierId(purchase.getSupplier().getId())
-        .supplierName(purchase.getSupplier().getName())
-        .invoiceNumber(purchase.getInvoiceNumber())
-        .items(purchase.getItems().stream().map(item -> TransactionItemResponseDTO.builder()
-            .id(item.getId())
-            .productId(item.getProduct().getId())
-            .productName(item.getProduct().getName())
-            .amount(item.getAmount())
-            .unitPrice(item.getUnitPrice())
-            .subtotal(item.getAmount() * item.getUnitPrice())
-            .build()).toList())
-        .build();
   }
 }
