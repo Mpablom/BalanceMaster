@@ -2,6 +2,7 @@ package com.BalanceMaster.gestor_ventas.converters;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleRequestDTO;
@@ -34,6 +35,7 @@ public class SaleConverter {
     sale.setDate(LocalDateTime.now());
     sale.setPaymentMethod(request.getPaymentMethod());
     sale.setAmountPaid(request.getAmountPaid());
+    sale.setId("SALE-" + UUID.randomUUID());
 
     List<TransactionItem> items = request.getItems().stream().map(itemDTO -> {
       Product product = productRepository.findById(itemDTO.getProductId())
@@ -42,6 +44,7 @@ public class SaleConverter {
       TransactionItem item = new TransactionItem();
       item.setProduct(product);
       item.setAmount(itemDTO.getAmount());
+      item.setUnitPrice(itemDTO.getUnitPrice());
       item.setTransaction(sale);
       return item;
     }).collect(Collectors.toList());

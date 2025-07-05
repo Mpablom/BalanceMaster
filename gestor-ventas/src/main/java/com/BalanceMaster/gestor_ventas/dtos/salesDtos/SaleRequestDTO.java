@@ -2,7 +2,7 @@ package com.BalanceMaster.gestor_ventas.dtos.salesDtos;
 
 import java.util.List;
 
-import com.BalanceMaster.gestor_ventas.dtos.salesItemsDtos.SaleItemDTO;
+import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemRequestDTO;
 import com.BalanceMaster.gestor_ventas.enums.PaymentMethod;
 
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ public class SaleRequestDTO {
   private Long customerId;
 
   @NotEmpty(message = "Items must not be empty")
-  private List<@Valid SaleItemDTO> items;
+  private List<@Valid TransactionItemRequestDTO> items;
 
   @NotNull(message = "Payment method is required")
   private PaymentMethod paymentMethod;
