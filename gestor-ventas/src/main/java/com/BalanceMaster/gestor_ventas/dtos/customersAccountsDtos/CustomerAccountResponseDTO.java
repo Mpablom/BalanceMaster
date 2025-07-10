@@ -20,6 +20,8 @@ public class CustomerAccountResponseDTO {
   private Long customerId;
   private String customerName;
   private Double balance;
+  private Double creditLimit;
   private LocalDate dueDate;
+  private Double availableCredit;
   private List<MovementResponseDTO> movements;
 }

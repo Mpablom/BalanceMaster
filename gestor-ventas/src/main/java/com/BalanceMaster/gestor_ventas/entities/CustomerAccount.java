@@ -27,6 +27,9 @@ public class CustomerAccount {
   @Column(nullable = false)
   private double balance;
 
+  @Column(name = "credit_limit", nullable = false)
+  private double creditLimit;
+
   @Column(name = "due_date")
   private LocalDate dueDate;
 
