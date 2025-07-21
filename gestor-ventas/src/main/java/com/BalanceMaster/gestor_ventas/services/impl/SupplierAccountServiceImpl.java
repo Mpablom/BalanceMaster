@@ -84,7 +84,6 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
     account.getMovements().add(movement);
 
     supplierAccountRepository.save(account);
-    movementsRepository.save(movement);
 
     return supplierAccountConverter.toDTO(account);
   }
