@@ -6,6 +6,9 @@ import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
 import com.BalanceMaster.gestor_ventas.repositories.TransactionItemRepository;
 import com.BalanceMaster.gestor_ventas.services.TransactionItemService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -32,5 +35,21 @@ public class TransactionItemServiceImpl implements TransactionItemService {
       throw new EntityNotFoundException("Transaction item not found");
     }
     transactionItemRepository.deleteById(id);
+  }
+
+  @Override
+  public Page<TransactionItemResponseDTO> getAllFiltered(Long productId, Long transactionId, Pageable pageable) {
+    Specification<TransactionItem> spec = Specification.where(null);
+
+    if (productId != null) {
+      spec = spec.and((root, query, cb) -> cb.equal(root.get("product").get("id"), productId));
+    }
+
+    if (transactionId != null) {
+      spec = spec.and((root, query, cb) -> cb.equal(root.get("product").get("id"), transactionId));
+    }
+
+    return transactionItemRepository.findAll(spec, pageable)
+        .map(transactionItemConverter::toDTO);
   }
 }
