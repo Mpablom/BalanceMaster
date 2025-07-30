@@ -41,6 +41,9 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
     if (customerAccountRepository.findByCustomerId(customer.getId()).isPresent()) {
       throw new IllegalStateException("Customer already has an account");
     }
+    if (customer.getDeleted()) {
+      throw new IllegalStateException("Cannot create account for deleted customer");
+    }
 
     CustomerAccount account = CustomerAccount.builder()
         .customer(customer)

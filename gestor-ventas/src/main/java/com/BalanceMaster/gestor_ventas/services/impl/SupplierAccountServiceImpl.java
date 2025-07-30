@@ -12,6 +12,7 @@ import com.BalanceMaster.gestor_ventas.entities.Movement;
 import com.BalanceMaster.gestor_ventas.entities.Supplier;
 import com.BalanceMaster.gestor_ventas.entities.SupplierAccount;
 import com.BalanceMaster.gestor_ventas.enums.MovementType;
+import com.BalanceMaster.gestor_ventas.repositories.MovementsRepository;
 import com.BalanceMaster.gestor_ventas.repositories.SupplierAccountRepository;
 import com.BalanceMaster.gestor_ventas.repositories.SupplierRepository;
 import com.BalanceMaster.gestor_ventas.services.SupplierAccountService;
@@ -28,6 +29,7 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
 
   private final SupplierRepository supplierRepository;
   private final SupplierAccountRepository supplierAccountRepository;
+  private final MovementsRepository movementsRepository;
   private final SupplierAccountConverter supplierAccountConverter;
 
   @Override
@@ -39,6 +41,9 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
       throw new IllegalStateException("Supplier already has an account");
     }
 
+    if (supplier.getDeleted()) {
+      throw new IllegalStateException("Cannot create account for deleted supplier");
+    }
     SupplierAccount account = SupplierAccount.builder()
         .supplier(supplier)
         .balance(request.getBalance())
@@ -82,6 +87,7 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
     account.getMovements().add(movement);
 
     supplierAccountRepository.save(account);
+    movementsRepository.save(movement);
 
     return supplierAccountConverter.toDTO(account);
   }

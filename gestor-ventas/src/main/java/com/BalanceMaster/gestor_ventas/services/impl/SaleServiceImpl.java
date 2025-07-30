@@ -3,9 +3,11 @@ package com.BalanceMaster.gestor_ventas.services.impl;
 import com.BalanceMaster.gestor_ventas.converters.SaleConverter;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleResponseDTO;
+import com.BalanceMaster.gestor_ventas.entities.Customer;
 import com.BalanceMaster.gestor_ventas.entities.Inventory;
 import com.BalanceMaster.gestor_ventas.entities.Sale;
 import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
+import com.BalanceMaster.gestor_ventas.repositories.CustomerRepository;
 import com.BalanceMaster.gestor_ventas.repositories.InventoryRepository;
 import com.BalanceMaster.gestor_ventas.repositories.SaleRepository;
 import com.BalanceMaster.gestor_ventas.services.SaleService;
@@ -24,11 +26,16 @@ public class SaleServiceImpl implements SaleService {
   private final SaleRepository saleRepository;
   private final InventoryRepository inventoryRepository;
   private final SaleConverter saleConverter;
+  private final CustomerRepository customerRepository;
 
   @Override
   @Transactional
   public SaleResponseDTO createSale(SaleRequestDTO request) {
+    Customer customer = customerRepository.findByIdAndDeletedFalse(request.getCustomerId())
+        .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+
     Sale sale = saleConverter.toEntity(request);
+    sale.setCustomer(customer);
 
     for (TransactionItem item : sale.getItems()) {
       Inventory inventory = inventoryRepository.findByProduct(item.getProduct())
