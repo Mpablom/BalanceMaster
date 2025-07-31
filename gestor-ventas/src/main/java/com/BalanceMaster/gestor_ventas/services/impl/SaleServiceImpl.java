@@ -3,14 +3,11 @@ package com.BalanceMaster.gestor_ventas.services.impl;
 import com.BalanceMaster.gestor_ventas.converters.SaleConverter;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleResponseDTO;
-import com.BalanceMaster.gestor_ventas.entities.Customer;
-import com.BalanceMaster.gestor_ventas.entities.Inventory;
-import com.BalanceMaster.gestor_ventas.entities.Sale;
-import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
-import com.BalanceMaster.gestor_ventas.repositories.CustomerRepository;
+import com.BalanceMaster.gestor_ventas.entities.*;
 import com.BalanceMaster.gestor_ventas.repositories.InventoryRepository;
 import com.BalanceMaster.gestor_ventas.repositories.SaleRepository;
 import com.BalanceMaster.gestor_ventas.services.SaleService;
+import com.BalanceMaster.gestor_ventas.services.ValidationService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,23 +23,25 @@ public class SaleServiceImpl implements SaleService {
   private final SaleRepository saleRepository;
   private final InventoryRepository inventoryRepository;
   private final SaleConverter saleConverter;
-  private final CustomerRepository customerRepository;
+  private final ValidationService validationService;
 
   @Override
   @Transactional
   public SaleResponseDTO createSale(SaleRequestDTO request) {
-    Customer customer = customerRepository.findByIdAndDeletedFalse(request.getCustomerId())
-        .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+    Customer customer = validationService.validateActiveCustomer(request.getCustomerId());
 
     Sale sale = saleConverter.toEntity(request);
     sale.setCustomer(customer);
 
     for (TransactionItem item : sale.getItems()) {
-      Inventory inventory = inventoryRepository.findByProduct(item.getProduct())
+      Product validatedProduct = validationService.validateActiveProduct(item.getProduct().getId());
+      item.setProduct(validatedProduct);
+
+      Inventory inventory = inventoryRepository.findByProduct(validatedProduct)
           .orElseThrow(() -> new EntityNotFoundException("No inventory for product"));
 
       if (inventory.getQuantity() < item.getAmount()) {
-        throw new IllegalArgumentException("Not enough stock for product");
+        throw new IllegalArgumentException("Not enough stock for product: " + validatedProduct.getName());
       }
 
       inventory.setQuantity(inventory.getQuantity() - item.getAmount());

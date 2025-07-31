@@ -10,8 +10,8 @@ import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.*;
 import com.BalanceMaster.gestor_ventas.repositories.InventoryRepository;
 import com.BalanceMaster.gestor_ventas.repositories.PurchaseRepository;
-import com.BalanceMaster.gestor_ventas.repositories.SupplierRepository;
 import com.BalanceMaster.gestor_ventas.services.PurchaseService;
+import com.BalanceMaster.gestor_ventas.services.ValidationService;
 
 import org.springframework.stereotype.Service;
 
@@ -24,24 +24,28 @@ public class PurchaseServiceImpl implements PurchaseService {
   private final PurchaseRepository purchaseRepository;
   private final PurchaseConverter purchaseConverter;
   private final InventoryRepository inventoryRepository;
-  private final SupplierRepository supplierRepository;
+  private final ValidationService validationService;
 
   @Override
   public PurchaseResponseDTO createPurchase(PurchaseRequestDTO request) {
-    Supplier supplier = supplierRepository.findById(request.getSupplierId())
-        .orElseThrow(() -> new EntityNotFoundException("Supplier not found"));
-    if (supplier.getDeleted()) {
-      throw new IllegalStateException("Cannot register purchase with deleted supplier");
-    }
+    Supplier supplier = validationService.validateActiveSupplier(request.getSupplierId());
+
     Purchase purchase = purchaseConverter.toEntity(request);
     purchase.setId(UUID.randomUUID().toString());
+    purchase.setSupplier(supplier);
+
+    for (TransactionItem item : purchase.getItems()) {
+      Product validatedProduct = validationService.validateActiveProduct(item.getProduct().getId());
+      item.setProduct(validatedProduct);
+      ;
+    }
+
     Purchase saved = purchaseRepository.save(purchase);
 
     for (TransactionItem item : purchase.getItems()) {
-      Product product = item.getProduct();
-      Inventory inventory = inventoryRepository.findByProduct(product)
+      Inventory inventory = inventoryRepository.findByProduct(item.getProduct())
           .orElseGet(() -> Inventory.builder()
-              .product(product)
+              .product(item.getProduct())
               .quantity(0)
               .lastUpdated(LocalDateTime.now())
               .build());
