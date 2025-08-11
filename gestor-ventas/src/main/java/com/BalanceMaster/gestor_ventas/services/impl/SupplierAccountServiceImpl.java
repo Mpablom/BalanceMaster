@@ -14,8 +14,8 @@ import com.BalanceMaster.gestor_ventas.entities.SupplierAccount;
 import com.BalanceMaster.gestor_ventas.enums.MovementType;
 import com.BalanceMaster.gestor_ventas.repositories.MovementsRepository;
 import com.BalanceMaster.gestor_ventas.repositories.SupplierAccountRepository;
-import com.BalanceMaster.gestor_ventas.repositories.SupplierRepository;
 import com.BalanceMaster.gestor_ventas.services.SupplierAccountService;
+import com.BalanceMaster.gestor_ventas.services.ValidationService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,23 +27,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SupplierAccountServiceImpl implements SupplierAccountService {
 
-  private final SupplierRepository supplierRepository;
   private final SupplierAccountRepository supplierAccountRepository;
   private final MovementsRepository movementsRepository;
   private final SupplierAccountConverter supplierAccountConverter;
+  private final ValidationService validationService;
 
   @Override
   public SupplierAccountResponseDTO createSupplierAccount(SupplierAccountRequestDTO request) {
-    Supplier supplier = supplierRepository.findById(request.getSupplierId())
-        .orElseThrow(() -> new RuntimeException("Supplier not found"));
+    Supplier supplier = validationService.validateActiveSupplier(request.getSupplierId());
 
     if (supplierAccountRepository.findBySupplierId(supplier.getId()).isPresent()) {
       throw new IllegalStateException("Supplier already has an account");
     }
 
-    if (supplier.getDeleted()) {
-      throw new IllegalStateException("Cannot create account for deleted supplier");
-    }
     SupplierAccount account = SupplierAccount.builder()
         .supplier(supplier)
         .balance(request.getBalance())
@@ -57,6 +53,8 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
 
   @Override
   public SupplierAccountResponseDTO getAccountBySupplierId(Long supplierId) {
+    validationService.validateActiveSupplier(supplierId);
+
     SupplierAccount account = supplierAccountRepository.findBySupplierId(supplierId)
         .orElseThrow(() -> new EntityNotFoundException("Supplier account not found"));
 
@@ -65,6 +63,8 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
 
   @Override
   public SupplierAccountResponseDTO addMovement(Long supplierId, MovementRequestDTO movementRequestDTO) {
+    validationService.validateActiveSupplier(supplierId);
+
     SupplierAccount account = supplierAccountRepository.findBySupplierId(supplierId)
         .orElseThrow(() -> new EntityNotFoundException("Supplier account not found"));
 
@@ -94,6 +94,8 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
 
   @Override
   public SupplierAccountResponseDTO updateSupplierAccount(Long supplierId, SupplierAccountRequestDTO request) {
+    validationService.validateActiveSupplier(supplierId);
+
     SupplierAccount account = supplierAccountRepository.findBySupplierId(supplierId)
         .orElseThrow(() -> new EntityNotFoundException("Supplier account not found"));
 
@@ -105,6 +107,8 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
   @Override
   @Transactional
   public void deleteSupplierAccount(Long supplierId) {
+    validationService.validateActiveSupplier(supplierId);
+
     SupplierAccount account = supplierAccountRepository.findBySupplierId(supplierId)
         .orElseThrow(() -> new EntityNotFoundException("Supplier account not found"));
 
@@ -112,6 +116,7 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
       throw new IllegalStateException("Cannot delete account with non-zero balance");
     }
 
+    movementsRepository.deleteAll(account.getMovements());
     supplierAccountRepository.delete(account);
   }
 }
