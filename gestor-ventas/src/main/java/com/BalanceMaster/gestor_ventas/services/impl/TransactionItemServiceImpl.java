@@ -5,6 +5,7 @@ import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionIte
 import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
 import com.BalanceMaster.gestor_ventas.repositories.TransactionItemRepository;
 import com.BalanceMaster.gestor_ventas.services.TransactionItemService;
+import com.BalanceMaster.gestor_ventas.services.ValidationService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,14 @@ public class TransactionItemServiceImpl implements TransactionItemService {
 
   private final TransactionItemRepository transactionItemRepository;
   private final TransactionItemConverter transactionItemConverter;
+  private final ValidationService validationService;
 
   @Override
   public TransactionItemResponseDTO getTransactionItemById(Long id) {
     TransactionItem transactionItem = transactionItemRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Transaction item not found"));
 
+    validationService.validateActiveProduct(transactionItem.getProduct().getId());
     return transactionItemConverter.toDTO(transactionItem);
   }
 
@@ -42,6 +45,7 @@ public class TransactionItemServiceImpl implements TransactionItemService {
     Specification<TransactionItem> spec = Specification.where(null);
 
     if (productId != null) {
+      validationService.validateActiveProduct(productId);
       spec = spec.and((root, query, cb) -> cb.equal(root.get("product").get("id"), productId));
     }
 

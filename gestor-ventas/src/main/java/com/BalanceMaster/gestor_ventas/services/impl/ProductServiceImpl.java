@@ -4,9 +4,9 @@ import com.BalanceMaster.gestor_ventas.converters.ProductConverter;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Product;
-import com.BalanceMaster.gestor_ventas.exceptions.ResourceNotFoundException;
 import com.BalanceMaster.gestor_ventas.repositories.ProductRepository;
 import com.BalanceMaster.gestor_ventas.services.ProductService;
+import com.BalanceMaster.gestor_ventas.services.ValidationService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductServiceImpl implements ProductService {
   private final ProductRepository productRepository;
   private final ProductConverter productConverter;
+  private final ValidationService validationService;
 
   @Override
   @Transactional
@@ -32,9 +33,7 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Transactional
   public ProductResponseDTO updateProduct(Long id, ProductRequestDTO request) {
-    Product product = productRepository.findById(id)
-        .filter(p -> !p.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+    Product product = validationService.validateActiveProduct(id);
 
     product.setBarcode(request.getBarcode());
     product.setName(request.getName());
@@ -48,18 +47,16 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Transactional
   public void deleteProduct(Long id) {
-    Product product = productRepository.findById(id)
-        .filter(p -> !p.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+    Product product = validationService.validateActiveProduct(id);
+
     product.setDeleted(true);
   }
 
   @Override
   @Transactional(readOnly = true)
   public ProductResponseDTO getProductById(Long id) {
-    Product product = productRepository.findById(id)
-        .filter(p -> !p.getDeleted())
-        .orElseThrow(() -> new ResourceNotFoundException("Product not found "));
+    Product product = validationService.validateActiveProduct(id);
+
     return productConverter.toDTO(product);
   }
 

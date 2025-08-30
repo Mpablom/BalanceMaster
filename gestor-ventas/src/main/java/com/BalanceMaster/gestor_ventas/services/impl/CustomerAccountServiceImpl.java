@@ -16,6 +16,7 @@ import com.BalanceMaster.gestor_ventas.repositories.CustomerAccountRepository;
 import com.BalanceMaster.gestor_ventas.repositories.CustomerRepository;
 import com.BalanceMaster.gestor_ventas.repositories.MovementsRepository;
 import com.BalanceMaster.gestor_ventas.services.CustomerAccountService;
+import com.BalanceMaster.gestor_ventas.services.ValidationService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,18 +32,15 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
   private final CustomerAccountConverter customerAccountConverter;
   private final CustomerRepository customerRepository;
   private final MovementsRepository movementsRepository;
+  private final ValidationService validationService;
 
   @Override
   @Transactional
   public CustomerAccountResponseDTO createAccount(CustomerAccountRequestDTO request) {
-    Customer customer = customerRepository.findById(request.getCustomerId())
-        .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+    Customer customer = validationService.validateActiveCustomer(request.getCustomerId());
 
     if (customerAccountRepository.findByCustomerId(customer.getId()).isPresent()) {
       throw new IllegalStateException("Customer already has an account");
-    }
-    if (customer.getDeleted()) {
-      throw new IllegalStateException("Cannot create account for deleted customer");
     }
 
     CustomerAccount account = CustomerAccount.builder()
@@ -59,6 +57,8 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
 
   @Override
   public CustomerAccountResponseDTO updateAccount(Long customerId, CustomerAccountRequestDTO request) {
+    validationService.validateActiveCustomer(customerId);
+
     CustomerAccount account = customerAccountRepository.findByCustomerId(customerId)
         .orElseThrow(() -> new EntityNotFoundException("Customer account not found"));
 
@@ -75,6 +75,8 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
   @Override
   @Transactional
   public void deleteAccount(Long customerId) {
+    validationService.validateActiveCustomer(customerId);
+
     CustomerAccount account = customerAccountRepository.findByCustomerId(customerId)
         .orElseThrow(() -> new EntityNotFoundException("Customer account not found"));
 
@@ -88,6 +90,8 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
   @Override
   @Transactional(readOnly = true)
   public CustomerAccountResponseDTO getByCustomerId(Long customerId) {
+    validationService.validateActiveCustomer(customerId);
+
     CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customerId)
         .orElseThrow(() -> new EntityNotFoundException("Customer account not found"));
     return customerAccountConverter.toDTO(customerAccount);
@@ -96,6 +100,8 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
   @Override
   @Transactional
   public CustomerAccountResponseDTO addMovement(Long customerId, MovementRequestDTO movementRequestDTO) {
+    validationService.validateActiveProduct(customerId);
+
     CustomerAccount customerAccount = customerAccountRepository.findByCustomerId(customerId)
         .orElseThrow(() -> new EntityNotFoundException("Customer account not found"));
 
