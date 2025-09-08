@@ -2,7 +2,6 @@ package com.BalanceMaster.gestor_ventas.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import com.BalanceMaster.gestor_ventas.converters.PurchaseConverter;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseRequestDTO;
@@ -14,6 +13,7 @@ import com.BalanceMaster.gestor_ventas.services.PurchaseService;
 import com.BalanceMaster.gestor_ventas.services.ValidationService;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +27,19 @@ public class PurchaseServiceImpl implements PurchaseService {
   private final ValidationService validationService;
 
   @Override
+  @Transactional
   public PurchaseResponseDTO createPurchase(PurchaseRequestDTO request) {
     Supplier supplier = validationService.validateActiveSupplier(request.getSupplierId());
 
     Purchase purchase = purchaseConverter.toEntity(request);
-    purchase.setId(UUID.randomUUID().toString());
-    purchase.setSupplier(supplier);
+
+    if (purchase.getSupplier() == null) {
+      purchase.setSupplier(supplier);
+    }
 
     for (TransactionItem item : purchase.getItems()) {
       Product validatedProduct = validationService.validateActiveProduct(item.getProduct().getId());
       item.setProduct(validatedProduct);
-      ;
     }
 
     Purchase saved = purchaseRepository.save(purchase);
@@ -58,6 +60,7 @@ public class PurchaseServiceImpl implements PurchaseService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<PurchaseResponseDTO> getAllPurchases() {
     return purchaseRepository.findAll().stream()
         .map(purchaseConverter::toDTO)
@@ -65,6 +68,7 @@ public class PurchaseServiceImpl implements PurchaseService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public PurchaseResponseDTO findPurchaseById(String id) {
     Purchase purchase = purchaseRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Purchase not found"));

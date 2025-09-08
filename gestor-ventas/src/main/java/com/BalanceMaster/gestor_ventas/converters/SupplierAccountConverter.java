@@ -1,7 +1,6 @@
 package com.BalanceMaster.gestor_ventas.converters;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import com.BalanceMaster.gestor_ventas.dtos.suppliersAccountsDtos.SupplierAccountResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.SupplierAccount;
@@ -25,8 +24,8 @@ public class SupplierAccountConverter {
         .dueDate(account.getDueDate())
         .movements(account.getMovements() != null ? account.getMovements().stream()
             .map(movementConverter::toDTO)
-            .collect(Collectors.toList())
-            : new ArrayList<>())
+            .toList()
+            : List.of())
         .build();
   }
 }

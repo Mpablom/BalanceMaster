@@ -1,9 +1,13 @@
 package com.BalanceMaster.gestor_ventas.services.impl;
 
+import java.time.LocalDateTime;
+
 import com.BalanceMaster.gestor_ventas.converters.ProductConverter;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
+import com.BalanceMaster.gestor_ventas.entities.Inventory;
 import com.BalanceMaster.gestor_ventas.entities.Product;
+import com.BalanceMaster.gestor_ventas.repositories.InventoryRepository;
 import com.BalanceMaster.gestor_ventas.repositories.ProductRepository;
 import com.BalanceMaster.gestor_ventas.services.ProductService;
 import com.BalanceMaster.gestor_ventas.services.ValidationService;
@@ -21,13 +25,22 @@ public class ProductServiceImpl implements ProductService {
   private final ProductRepository productRepository;
   private final ProductConverter productConverter;
   private final ValidationService validationService;
+  private final InventoryRepository inventoryRepository;
 
   @Override
-  @Transactional
-  public ProductResponseDTO createProduct(ProductRequestDTO request) {
-    Product product = productConverter.toEntity(request);
-    product.setDeleted(false);
-    return productConverter.toDTO(productRepository.save(product));
+  public ProductResponseDTO createProduct(ProductRequestDTO dto) {
+    Product product = productRepository.save(productConverter.toEntity(dto));
+
+    int initialStock = (dto.getInitialStock() != null) ? dto.getInitialStock() : 0;
+
+    Inventory inventory = new Inventory();
+    inventory.setProduct(product);
+    inventory.setQuantity(initialStock);
+    inventory.setLocation(null);
+    inventory.setLastUpdated(LocalDateTime.now());
+    inventoryRepository.save(inventory);
+
+    return productConverter.toDTO(product, initialStock);
   }
 
   @Override

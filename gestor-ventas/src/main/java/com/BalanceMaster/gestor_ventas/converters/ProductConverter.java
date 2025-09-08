@@ -23,6 +23,12 @@ public class ProductConverter implements Converter<Product, ProductRequestDTO, P
         .build();
   }
 
+  public ProductResponseDTO toDTO(Product product, int currentStock) {
+    ProductResponseDTO dto = toDTO(product);
+    dto.setCurrentStock(currentStock);
+    return dto;
+  }
+
   @Override
   public Product toEntity(ProductRequestDTO dto) {
     if (dto == null)

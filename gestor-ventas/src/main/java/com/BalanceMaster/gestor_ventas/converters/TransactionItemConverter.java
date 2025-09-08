@@ -1,7 +1,6 @@
 package com.BalanceMaster.gestor_ventas.converters;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemResponseDTO;
@@ -47,6 +46,6 @@ public class TransactionItemConverter {
   public List<TransactionItemResponseDTO> toDTOList(List<TransactionItem> items) {
     return items.stream()
         .map(this::toDTO)
-        .collect(Collectors.toList());
+        .toList();
   }
 }

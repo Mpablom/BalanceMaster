@@ -41,4 +41,11 @@ public class Movement {
   @ManyToOne
   @JoinColumn(name = "supplier_account_id")
   private SupplierAccount supplierAccount;
+
+  @PrePersist
+  public void prePersist() {
+    if (this.date == null) {
+      this.date = LocalDateTime.now();
+    }
+  }
 }

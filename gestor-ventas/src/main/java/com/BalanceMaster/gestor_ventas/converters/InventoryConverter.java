@@ -17,17 +17,6 @@ public class InventoryConverter implements Converter<Inventory, InventoryRequest
   private final ProductRepository productRepository;
 
   @Override
-  public InventoryResponseDTO toDTO(Inventory inventory) {
-    return InventoryResponseDTO.builder()
-        .productId(inventory.getProduct().getId())
-        .productName(inventory.getProduct().getName())
-        .quantity(inventory.getQuantity())
-        .location(inventory.getLocation())
-        .lastUpdated(inventory.getLastUpdated())
-        .build();
-  }
-
-  @Override
   public Inventory toEntity(InventoryRequestDTO dto) {
     Product product = productRepository.findById(dto.getProductId())
         .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + dto.getProductId()));
@@ -39,4 +28,16 @@ public class InventoryConverter implements Converter<Inventory, InventoryRequest
         .location(dto.getLocation())
         .build();
   }
+
+  @Override
+  public InventoryResponseDTO toDTO(Inventory inventory) {
+    return InventoryResponseDTO.builder()
+        .productId(inventory.getProduct().getId())
+        .productName(inventory.getProduct().getName())
+        .quantity(inventory.getQuantity())
+        .location(inventory.getLocation())
+        .lastUpdated(inventory.getLastUpdated())
+        .build();
+  }
+
 }

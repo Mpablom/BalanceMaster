@@ -1,7 +1,6 @@
 package com.BalanceMaster.gestor_ventas.converters;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.BalanceMaster.gestor_ventas.dtos.customersAccountsDtos.CustomerAccountResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.CustomerAccount;
@@ -26,7 +25,7 @@ public class CustomerAccountConverter {
         .availableCredit(customerAccount.getCreditLimit() - customerAccount.getBalance())
         .dueDate(customerAccount.getDueDate())
         .movements(customerAccount.getMovements() != null
-            ? customerAccount.getMovements().stream().map(movementConverter::toDTO).collect(Collectors.toList())
+            ? customerAccount.getMovements().stream().map(movementConverter::toDTO).toList()
             : List.of())
         .build();
   }

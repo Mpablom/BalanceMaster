@@ -2,15 +2,13 @@ package com.BalanceMaster.gestor_ventas.converters;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseResponseDTO;
-import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemResponseDTO;
-import com.BalanceMaster.gestor_ventas.entities.Product;
 import com.BalanceMaster.gestor_ventas.entities.Purchase;
 import com.BalanceMaster.gestor_ventas.entities.Supplier;
 import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
-import com.BalanceMaster.gestor_ventas.repositories.ProductRepository;
 import com.BalanceMaster.gestor_ventas.repositories.SupplierRepository;
 
 import org.springframework.stereotype.Component;
@@ -22,26 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PurchaseConverter {
   private final SupplierRepository supplierRepository;
-  private final ProductRepository productRepository;
-
-  public PurchaseResponseDTO toDTO(Purchase purchase) {
-    return PurchaseResponseDTO.builder()
-        .id(purchase.getId())
-        .date(purchase.getDate())
-        .total(purchase.getTotal())
-        .supplierId(purchase.getSupplier().getId())
-        .supplierName(purchase.getSupplier().getName())
-        .invoiceNumber(purchase.getInvoiceNumber())
-        .items(purchase.getItems().stream().map(item -> TransactionItemResponseDTO.builder()
-            .id(item.getId())
-            .productId(item.getProduct().getId())
-            .productName(item.getProduct().getName())
-            .amount(item.getAmount())
-            .unitPrice(item.getUnitPrice())
-            .subtotal(item.getAmount() * item.getUnitPrice())
-            .build()).toList())
-        .build();
-  }
+  private final TransactionItemConverter transactionItemConverter;
 
   public Purchase toEntity(PurchaseRequestDTO request) {
     Supplier supplier = supplierRepository.findById(request.getSupplierId())
@@ -51,18 +30,11 @@ public class PurchaseConverter {
     purchase.setDate(LocalDateTime.now());
     purchase.setSupplier(supplier);
     purchase.setInvoiceNumber(request.getInvoiceNumber());
+    purchase.setId("PUR-" + UUID.randomUUID());
 
-    List<TransactionItem> items = request.getItems().stream().map(itemDTO -> {
-      Product product = productRepository.findById(itemDTO.getProductId())
-          .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-      TransactionItem item = TransactionItem.builder()
-          .product(product)
-          .amount(itemDTO.getAmount())
-          .unitPrice(itemDTO.getUnitPrice())
-          .transaction(purchase)
-          .build();
-      return item;
-    }).toList();
+    List<TransactionItem> items = request.getItems().stream()
+        .map(itemdto -> transactionItemConverter.toEntity(itemdto, purchase))
+        .toList();
 
     purchase.setItems(items);
     purchase.setTotal(items.stream()
@@ -70,5 +42,17 @@ public class PurchaseConverter {
         .sum());
 
     return purchase;
+  }
+
+  public PurchaseResponseDTO toDTO(Purchase purchase) {
+    return PurchaseResponseDTO.builder()
+        .id(purchase.getId())
+        .date(purchase.getDate())
+        .total(purchase.getTotal())
+        .supplierId(purchase.getSupplier().getId())
+        .supplierName(purchase.getSupplier().getName())
+        .invoiceNumber(purchase.getInvoiceNumber())
+        .items(transactionItemConverter.toDTOList(purchase.getItems()))
+        .build();
   }
 }

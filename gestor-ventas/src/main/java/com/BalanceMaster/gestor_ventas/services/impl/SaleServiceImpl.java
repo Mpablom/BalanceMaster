@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.services.impl;
 
+import java.time.LocalDateTime;
+
 import com.BalanceMaster.gestor_ventas.converters.SaleConverter;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleResponseDTO;
@@ -45,7 +47,7 @@ public class SaleServiceImpl implements SaleService {
       }
 
       inventory.setQuantity(inventory.getQuantity() - item.getAmount());
-      inventory.setLastUpdated(sale.getDate());
+      inventory.setLastUpdated(LocalDateTime.now());
       inventoryRepository.save(inventory);
     }
 

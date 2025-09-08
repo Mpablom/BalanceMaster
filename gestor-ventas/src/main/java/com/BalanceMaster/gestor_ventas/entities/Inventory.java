@@ -32,4 +32,13 @@ public class Inventory {
   @Column(name = "last_updated", nullable = false)
   private LocalDateTime lastUpdated;
 
+  @PrePersist
+  public void prePersist() {
+    this.lastUpdated = LocalDateTime.now();
+  }
+
+  @PreUpdate
+  public void preUpdate() {
+    this.lastUpdated = LocalDateTime.now();
+  }
 }

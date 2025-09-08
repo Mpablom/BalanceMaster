@@ -18,4 +18,5 @@ public class ProductResponseDTO {
   private Double purchasePrice;
   private Double salePrice;
   private Integer minStock;
+  private Integer currentStock;
 }

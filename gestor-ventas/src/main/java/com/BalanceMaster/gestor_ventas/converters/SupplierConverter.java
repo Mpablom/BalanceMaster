@@ -8,16 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SupplierConverter implements Converter<Supplier, SupplierRequestDTO, SupplierResponseDTO> {
-  @Override
-  public SupplierResponseDTO toDTO(Supplier supplier) {
-    if (supplier == null)
-      return null;
-    return SupplierResponseDTO.builder()
-        .id(supplier.getId())
-        .name(supplier.getName())
-        .contactInfo(supplier.getContactInfo())
-        .build();
-  }
 
   @Override
   public Supplier toEntity(SupplierRequestDTO dto) {
@@ -27,6 +17,17 @@ public class SupplierConverter implements Converter<Supplier, SupplierRequestDTO
         .name(dto.getName())
         .contactInfo(dto.getContactInfo())
         .deleted(false)
+        .build();
+  }
+
+  @Override
+  public SupplierResponseDTO toDTO(Supplier supplier) {
+    if (supplier == null)
+      return null;
+    return SupplierResponseDTO.builder()
+        .id(supplier.getId())
+        .name(supplier.getName())
+        .contactInfo(supplier.getContactInfo())
         .build();
   }
 }

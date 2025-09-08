@@ -30,4 +30,6 @@ public class ProductRequestDTO {
   @NotNull(message = "Minimum stock is required")
   @Min(value = 0, message = "Minimum stock cannot be negative")
   private Integer minStock;
+
+  private Integer initialStock;
 }
