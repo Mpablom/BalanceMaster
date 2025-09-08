@@ -36,11 +36,10 @@ public class ProductServiceImpl implements ProductService {
     Inventory inventory = new Inventory();
     inventory.setProduct(product);
     inventory.setQuantity(initialStock);
-    inventory.setLocation(null);
     inventory.setLastUpdated(LocalDateTime.now());
     inventoryRepository.save(inventory);
 
-    return productConverter.toDTO(product, initialStock);
+    return productConverter.toDTO(product);
   }
 
   @Override

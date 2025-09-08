@@ -39,6 +39,9 @@ public class Product {
   @Builder.Default
   private Boolean deleted = false;
 
+  @OneToOne(mappedBy = "product", fetch = FetchType.LAZY)
+  private Inventory inventory;
+
   public double calculateProfit() {
     return salePrice - purchasePrice;
   }

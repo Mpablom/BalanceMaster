@@ -1,17 +1,34 @@
 package com.BalanceMaster.gestor_ventas.converters;
 
+import com.BalanceMaster.gestor_ventas.dtos.inventoriesDtos.InventoryResponseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Product;
+import com.BalanceMaster.gestor_ventas.repositories.InventoryRepository;
 
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class ProductConverter implements Converter<Product, ProductRequestDTO, ProductResponseDTO> {
+  private final InventoryRepository inventoryRepository;
+
   @Override
   public ProductResponseDTO toDTO(Product product) {
     if (product == null)
       return null;
+
+    InventoryResponseDTO inventoryDTO = inventoryRepository.findByProduct(product)
+        .map(inv -> InventoryResponseDTO.builder()
+            .productId(inv.getProduct() != null ? inv.getProduct().getId() : null)
+            .productName(inv.getProduct() != null ? inv.getProduct().getName() : null)
+            .quantity(inv.getQuantity())
+            .lastUpdated(inv.getLastUpdated())
+            .build())
+        .orElse(null);
+
     return ProductResponseDTO.builder()
         .id(product.getId())
         .barcode(product.getBarcode())
@@ -20,19 +37,15 @@ public class ProductConverter implements Converter<Product, ProductRequestDTO, P
         .purchasePrice(product.getPurchasePrice())
         .salePrice(product.getSalePrice())
         .minStock(product.getMinStock())
+        .inventory(inventoryDTO)
         .build();
-  }
-
-  public ProductResponseDTO toDTO(Product product, int currentStock) {
-    ProductResponseDTO dto = toDTO(product);
-    dto.setCurrentStock(currentStock);
-    return dto;
   }
 
   @Override
   public Product toEntity(ProductRequestDTO dto) {
     if (dto == null)
       return null;
+
     return Product.builder()
         .barcode(dto.getBarcode())
         .name(dto.getName())

@@ -25,17 +25,15 @@ public class InventoryConverter implements Converter<Inventory, InventoryRequest
         .product(product)
         .quantity(dto.getQuantity())
         .lastUpdated(java.time.LocalDateTime.now())
-        .location(dto.getLocation())
         .build();
   }
 
   @Override
   public InventoryResponseDTO toDTO(Inventory inventory) {
     return InventoryResponseDTO.builder()
-        .productId(inventory.getProduct().getId())
-        .productName(inventory.getProduct().getName())
+        .productId(inventory.getProduct() != null ? inventory.getProduct().getId() : null)
+        .productName(inventory.getProduct() != null ? inventory.getProduct().getName() : null)
         .quantity(inventory.getQuantity())
-        .location(inventory.getLocation())
         .lastUpdated(inventory.getLastUpdated())
         .build();
   }

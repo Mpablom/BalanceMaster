@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.dtos.movementsDtos;
 
+import java.time.LocalDateTime;
+
 import com.BalanceMaster.gestor_ventas.enums.MovementType;
 
 import jakarta.validation.constraints.NotBlank;
@@ -25,4 +27,5 @@ public class MovementRequestDTO {
   @NotBlank(message = "Description is required")
   private String description;
 
+  private LocalDateTime date;
 }

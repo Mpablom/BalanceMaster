@@ -13,7 +13,6 @@ import com.BalanceMaster.gestor_ventas.entities.CustomerAccount;
 import com.BalanceMaster.gestor_ventas.entities.Movement;
 import com.BalanceMaster.gestor_ventas.enums.MovementType;
 import com.BalanceMaster.gestor_ventas.repositories.CustomerAccountRepository;
-import com.BalanceMaster.gestor_ventas.repositories.CustomerRepository;
 import com.BalanceMaster.gestor_ventas.repositories.MovementsRepository;
 import com.BalanceMaster.gestor_ventas.services.CustomerAccountService;
 import com.BalanceMaster.gestor_ventas.services.ValidationService;
@@ -30,7 +29,6 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
 
   private final CustomerAccountRepository customerAccountRepository;
   private final CustomerAccountConverter customerAccountConverter;
-  private final CustomerRepository customerRepository;
   private final MovementsRepository movementsRepository;
   private final ValidationService validationService;
 
