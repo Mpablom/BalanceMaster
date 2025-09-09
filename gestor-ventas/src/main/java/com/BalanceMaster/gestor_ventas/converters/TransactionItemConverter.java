@@ -7,34 +7,39 @@ import com.BalanceMaster.gestor_ventas.dtos.inventoriesDtos.InventoryResponseDTO
 import com.BalanceMaster.gestor_ventas.dtos.productsDtos.ProductResponseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemResponseDTO;
-import com.BalanceMaster.gestor_ventas.entities.Product;
-import com.BalanceMaster.gestor_ventas.entities.Transaction;
-import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
+import com.BalanceMaster.gestor_ventas.entities.*;
+import com.BalanceMaster.gestor_ventas.repositories.ProductRepository;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class TransactionItemConverter {
 
-  // toEntity: referencia por id (no setear subtotal)
+  private final ProductRepository productRepository;
+
   public TransactionItem toEntity(TransactionItemRequestDTO dto, Transaction transaction) {
     TransactionItem item = new TransactionItem();
-    // no asumas id en request; solo setea lo que venga
     item.setAmount(dto.getAmount());
-    item.setUnitCost(dto.getUnitCost());
     item.setUnitPrice(dto.getUnitPrice());
-    // referenciamos Product **por id** para evitar cargar todo el objeto aquí
-    Product p = Product.builder().id(dto.getProductId()).build();
-    item.setProduct(p);
+
+    Product product = productRepository.findById(dto.getProductId())
+        .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+    item.setProduct(product);
+
+    if (transaction instanceof Purchase) {
+      item.setUnitCost(dto.getUnitCost());
+    } else if (transaction instanceof Sale) {
+      item.setUnitCost(product.getPurchasePrice());
+    }
+
     item.setTransaction(transaction);
     return item;
   }
 
-  // toDTO: construye ProductResponseDTO ligero y InventoryResponseDTO sin volver
-  // al Product
   public TransactionItemResponseDTO toDTO(TransactionItem item) {
     if (item == null)
       return null;
@@ -47,7 +52,7 @@ public class TransactionItemConverter {
       if (p.getInventory() != null) {
         inventoryDTO = InventoryResponseDTO.builder()
             .quantity(p.getInventory().getQuantity())
-            .productName(p.getName()) // **usar p.getName(), no inventory.getProduct()**
+            .productName(p.getName())
             .lastUpdated(p.getInventory().getLastUpdated())
             .build();
       }
