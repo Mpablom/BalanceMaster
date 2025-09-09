@@ -2,11 +2,10 @@ package com.BalanceMaster.gestor_ventas.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -15,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "supplier")
 @Builder
 public class Supplier {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -22,13 +22,16 @@ public class Supplier {
   @Column(nullable = false)
   private String name;
 
-  @Column(name = "contact_info", nullable = true)
+  @Column(name = "contact_info")
   private String contactInfo;
 
   @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
   private SupplierAccount account;
 
   @OneToMany(mappedBy = "supplier")
+  @JsonManagedReference
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private List<Purchase> purchases;
 
   @Column(nullable = false)

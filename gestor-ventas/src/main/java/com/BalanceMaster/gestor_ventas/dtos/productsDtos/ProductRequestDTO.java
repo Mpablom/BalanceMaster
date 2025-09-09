@@ -1,4 +1,4 @@
-package com.BalanceMaster.gestor_ventas.dtos.producsDtos;
+package com.BalanceMaster.gestor_ventas.dtos.productsDtos;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -23,13 +23,10 @@ public class ProductRequestDTO {
   @PositiveOrZero(message = "Purchase price cannot be negative")
   private Double purchasePrice;
 
-  @NotNull(message = "Sale price is required")
-  @PositiveOrZero(message = "Sale price cannot be negative")
-  private Double salePrice;
-
   @NotNull(message = "Minimum stock is required")
   @Min(value = 0, message = "Minimum stock cannot be negative")
   private Integer minStock;
 
   private Integer initialStock;
+  private Long categoryId;
 }

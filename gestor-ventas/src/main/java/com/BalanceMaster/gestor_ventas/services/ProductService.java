@@ -1,7 +1,7 @@
 package com.BalanceMaster.gestor_ventas.services;
 
-import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
-import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
+import com.BalanceMaster.gestor_ventas.dtos.productsDtos.ProductRequestDTO;
+import com.BalanceMaster.gestor_ventas.dtos.productsDtos.ProductResponseDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -3,10 +3,12 @@ package com.BalanceMaster.gestor_ventas.services.impl;
 import java.time.LocalDateTime;
 
 import com.BalanceMaster.gestor_ventas.converters.ProductConverter;
-import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductRequestDTO;
-import com.BalanceMaster.gestor_ventas.dtos.producsDtos.ProductResponseDTO;
+import com.BalanceMaster.gestor_ventas.dtos.productsDtos.ProductRequestDTO;
+import com.BalanceMaster.gestor_ventas.dtos.productsDtos.ProductResponseDTO;
+import com.BalanceMaster.gestor_ventas.entities.Category;
 import com.BalanceMaster.gestor_ventas.entities.Inventory;
 import com.BalanceMaster.gestor_ventas.entities.Product;
+import com.BalanceMaster.gestor_ventas.repositories.CategoryRepository;
 import com.BalanceMaster.gestor_ventas.repositories.InventoryRepository;
 import com.BalanceMaster.gestor_ventas.repositories.ProductRepository;
 import com.BalanceMaster.gestor_ventas.services.ProductService;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,8 +29,10 @@ public class ProductServiceImpl implements ProductService {
   private final ProductConverter productConverter;
   private final ValidationService validationService;
   private final InventoryRepository inventoryRepository;
+  private final CategoryRepository categoryRepository;
 
   @Override
+  @Transactional
   public ProductResponseDTO createProduct(ProductRequestDTO dto) {
     Product product = productRepository.save(productConverter.toEntity(dto));
 
@@ -51,8 +56,14 @@ public class ProductServiceImpl implements ProductService {
     product.setName(request.getName());
     product.setDescription(request.getDescription());
     product.setPurchasePrice(request.getPurchasePrice());
-    product.setSalePrice(request.getSalePrice());
     product.setMinStock(request.getMinStock());
+
+    if (request.getCategoryId() != null) {
+      Category category = categoryRepository.findById(request.getCategoryId())
+          .orElseThrow(() -> new EntityNotFoundException("Category not found with id " + request.getCategoryId()));
+      product.setCategory(category);
+    }
+
     return productConverter.toDTO(product);
   }
 

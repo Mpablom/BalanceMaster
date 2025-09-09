@@ -3,6 +3,7 @@ package com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,4 +24,7 @@ public class TransactionItemRequestDTO {
   @NotNull(message = "Unit price is required")
   @Positive(message = "Unit price must be positive")
   private Double unitPrice;
+
+  @PositiveOrZero(message = "Unit cost cannot be negative")
+  private Double unitCost;
 }

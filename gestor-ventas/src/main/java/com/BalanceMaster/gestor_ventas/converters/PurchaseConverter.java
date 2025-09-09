@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseResponseDTO;
+import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Purchase;
 import com.BalanceMaster.gestor_ventas.entities.Supplier;
 import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
@@ -18,7 +19,8 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class PurchaseConverter {
+public class PurchaseConverter implements Converter<Purchase, PurchaseRequestDTO, PurchaseResponseDTO> {
+
   private final SupplierRepository supplierRepository;
   private final TransactionItemConverter transactionItemConverter;
 
@@ -29,7 +31,6 @@ public class PurchaseConverter {
     Purchase purchase = new Purchase();
     purchase.setDate(LocalDateTime.now());
     purchase.setSupplier(supplier);
-    purchase.setInvoiceNumber(request.getInvoiceNumber());
     purchase.setId("PUR-" + UUID.randomUUID());
 
     List<TransactionItem> items = request.getItems().stream()
@@ -45,14 +46,27 @@ public class PurchaseConverter {
   }
 
   public PurchaseResponseDTO toDTO(Purchase purchase) {
+    Long supplierId = null;
+    String supplierName = null;
+    if (purchase.getSupplier() != null) {
+      supplierId = purchase.getSupplier().getId();
+      supplierName = purchase.getSupplier().getName();
+    }
+
+    List<TransactionItemResponseDTO> itemsDTO = null;
+    if (purchase.getItems() != null) {
+      itemsDTO = purchase.getItems().stream()
+          .map(transactionItemConverter::toDTO)
+          .toList();
+    }
+
     return PurchaseResponseDTO.builder()
         .id(purchase.getId())
         .date(purchase.getDate())
         .total(purchase.getTotal())
-        .supplierId(purchase.getSupplier().getId())
-        .supplierName(purchase.getSupplier().getName())
-        .invoiceNumber(purchase.getInvoiceNumber())
-        .items(transactionItemConverter.toDTOList(purchase.getItems()))
+        .supplierId(supplierId)
+        .supplierName(supplierName)
+        .items(itemsDTO)
         .build();
   }
 }

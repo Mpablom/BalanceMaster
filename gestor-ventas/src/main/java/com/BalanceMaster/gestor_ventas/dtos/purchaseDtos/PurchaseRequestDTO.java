@@ -21,8 +21,6 @@ public class PurchaseRequestDTO {
   @NotNull
   private Long supplierId;
 
-  private String invoiceNumber;
-
   @NotEmpty
   private List<@Valid TransactionItemRequestDTO> items;
 }

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleResponseDTO;
+import com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos.TransactionItemResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Customer;
 import com.BalanceMaster.gestor_ventas.entities.Sale;
 import com.BalanceMaster.gestor_ventas.entities.TransactionItem;
@@ -49,12 +50,23 @@ public class SaleConverter {
   }
 
   public SaleResponseDTO toDTO(Sale sale) {
+    if (sale == null)
+      return null;
+
+    Long customerId = sale.getCustomer() != null ? sale.getCustomer().getId() : null;
+
+    List<TransactionItemResponseDTO> items = sale.getItems() == null
+        ? List.of()
+        : sale.getItems().stream()
+            .map(transactionItemConverter::toDTO)
+            .toList();
+
     return SaleResponseDTO.builder()
         .id(sale.getId())
         .date(sale.getDate())
-        .customerId(sale.getCustomer().getId())
-        .items(transactionItemConverter.toDTOList(sale.getItems()))
-        .paymentMethod(sale.getPaymentMethod().name())
+        .customerId(customerId)
+        .items(items)
+        .paymentMethod(sale.getPaymentMethod() != null ? sale.getPaymentMethod().name() : null)
         .amountPaid(sale.getAmountPaid())
         .completed(sale.isCompleted())
         .total(sale.getTotal())

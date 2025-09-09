@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class InventoryResponseDTO {
 
-  private Long productId;
   private String productName;
   private Integer quantity;
   private LocalDateTime lastUpdated;

@@ -1,24 +1,27 @@
 package com.BalanceMaster.gestor_ventas.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "item_transaction")
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransactionItem {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "transaction_id", nullable = false)
+  @JsonBackReference("transaction-items")
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Transaction transaction;
 
   @ManyToOne(optional = false)
@@ -28,6 +31,14 @@ public class TransactionItem {
   @Column(nullable = false)
   private int amount;
 
+  @Column(name = "unit_cost", nullable = false)
+  private Double unitCost;
+
   @Column(name = "unitPrice", nullable = false)
-  private double unitPrice;
+  private Double unitPrice;
+
+  @Transient
+  public double getSubtotal() {
+    return unitPrice * amount;
+  }
 }

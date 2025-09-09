@@ -2,31 +2,35 @@ package com.BalanceMaster.gestor_ventas.entities;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "inventory")
 @Builder
+@Table(name = "inventory")
 public class Inventory {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   @OneToOne
   @MapsId
   @JoinColumn(name = "product_id", nullable = false)
+  @JsonBackReference
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   private Product product;
 
   @Column(nullable = false)
   private int quantity;
 
-  @Column(nullable = true)
+  @Column
   private String location;
 
   @Column(name = "last_updated", nullable = false)

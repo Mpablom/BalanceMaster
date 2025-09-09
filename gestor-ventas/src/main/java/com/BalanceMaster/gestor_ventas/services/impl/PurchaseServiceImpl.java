@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PurchaseServiceImpl implements PurchaseService {
+
   private final PurchaseRepository purchaseRepository;
   private final PurchaseConverter purchaseConverter;
   private final InventoryRepository inventoryRepository;
@@ -40,11 +41,21 @@ public class PurchaseServiceImpl implements PurchaseService {
     for (TransactionItem item : purchase.getItems()) {
       Product validatedProduct = validationService.validateActiveProduct(item.getProduct().getId());
       item.setProduct(validatedProduct);
+
+      if (item.getUnitPrice() == null || item.getUnitPrice() <= 0) {
+        item.setUnitPrice(validatedProduct.getSalePrice());
+      }
+      if (item.getUnitCost() == null) {
+        item.setUnitCost(validatedProduct.getPurchasePrice());
+      }
+      if (item.getAmount() <= 0) {
+        throw new IllegalArgumentException("Item amount must be greater than zero");
+      }
     }
 
     Purchase saved = purchaseRepository.save(purchase);
 
-    for (TransactionItem item : purchase.getItems()) {
+    for (TransactionItem item : saved.getItems()) {
       Inventory inventory = inventoryRepository.findByProduct(item.getProduct())
           .orElseGet(() -> Inventory.builder()
               .product(item.getProduct())
@@ -56,6 +67,7 @@ public class PurchaseServiceImpl implements PurchaseService {
       inventory.setLastUpdated(LocalDateTime.now());
       inventoryRepository.save(inventory);
     }
+
     return purchaseConverter.toDTO(saved);
   }
 

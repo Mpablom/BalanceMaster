@@ -1,5 +1,6 @@
-package com.BalanceMaster.gestor_ventas.dtos.producsDtos;
+package com.BalanceMaster.gestor_ventas.dtos.productsDtos;
 
+import com.BalanceMaster.gestor_ventas.dtos.categoryDtos.CategoryResponseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.inventoriesDtos.InventoryResponseDTO;
 
 import lombok.AllArgsConstructor;
@@ -21,4 +22,5 @@ public class ProductResponseDTO {
   private Double salePrice;
   private Integer minStock;
   private InventoryResponseDTO inventory;
+  private CategoryResponseDTO category;
 }

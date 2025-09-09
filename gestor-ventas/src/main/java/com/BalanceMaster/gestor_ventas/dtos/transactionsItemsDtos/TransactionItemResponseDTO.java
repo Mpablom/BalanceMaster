@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.dtos.transactionsItemsDtos;
 
+import com.BalanceMaster.gestor_ventas.dtos.productsDtos.ProductResponseDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +13,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TransactionItemResponseDTO {
   private Long id;
-  private Long productId;
-  private String productName;
+  private ProductResponseDTO product;
   private Integer amount;
+  private Double unitCost;
   private Double unitPrice;
   private Double subtotal;
 }

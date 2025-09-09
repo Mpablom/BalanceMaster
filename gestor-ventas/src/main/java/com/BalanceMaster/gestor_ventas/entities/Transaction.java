@@ -3,6 +3,8 @@ package com.BalanceMaster.gestor_ventas.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +25,7 @@ public abstract class Transaction {
   private LocalDateTime date;
 
   @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference("transaction-items")
   private List<TransactionItem> items;
 
   @Column(nullable = false)

@@ -20,6 +20,5 @@ public class PurchaseResponseDTO {
   private double total;
   private Long supplierId;
   private String supplierName;
-  private String invoiceNumber;
   private List<TransactionItemResponseDTO> items;
 }

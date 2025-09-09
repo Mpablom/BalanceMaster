@@ -31,7 +31,6 @@ public class InventoryConverter implements Converter<Inventory, InventoryRequest
   @Override
   public InventoryResponseDTO toDTO(Inventory inventory) {
     return InventoryResponseDTO.builder()
-        .productId(inventory.getProduct() != null ? inventory.getProduct().getId() : null)
         .productName(inventory.getProduct() != null ? inventory.getProduct().getName() : null)
         .quantity(inventory.getQuantity())
         .lastUpdated(inventory.getLastUpdated())
