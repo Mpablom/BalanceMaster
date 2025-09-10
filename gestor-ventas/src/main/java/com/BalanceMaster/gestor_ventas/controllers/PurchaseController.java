@@ -2,6 +2,7 @@ package com.BalanceMaster.gestor_ventas.controllers;
 
 import java.util.List;
 
+import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.DailyPurchaseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseResponseDTO;
 import com.BalanceMaster.gestor_ventas.services.PurchaseService;
@@ -33,5 +34,15 @@ public class PurchaseController {
   @GetMapping("/{id}")
   public ResponseEntity<PurchaseResponseDTO> getById(@PathVariable String id) {
     return ResponseEntity.ok(purchaseService.findPurchaseById(id));
+  }
+
+  @GetMapping("/daily")
+  public ResponseEntity<List<DailyPurchaseDTO>> getDailyPurchases() {
+    return ResponseEntity.ok(purchaseService.getDailyPurchases());
+  }
+
+  @GetMapping("/total")
+  public ResponseEntity<Double> getTotalPurchases() {
+    return ResponseEntity.ok(purchaseService.getTotalPurchases());
   }
 }

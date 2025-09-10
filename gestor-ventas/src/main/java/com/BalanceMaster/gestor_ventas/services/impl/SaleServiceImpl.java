@@ -1,8 +1,18 @@
 package com.BalanceMaster.gestor_ventas.services.impl;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.BalanceMaster.gestor_ventas.converters.SaleConverter;
+import com.BalanceMaster.gestor_ventas.dtos.productsDtos.ProductStockDTO;
+import com.BalanceMaster.gestor_ventas.dtos.salesDtos.DailySalesDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.*;
@@ -65,5 +75,52 @@ public class SaleServiceImpl implements SaleService {
   @Override
   public Page<SaleResponseDTO> getAllSales(Pageable pageable) {
     return saleRepository.findAll(pageable).map(saleConverter::toDTO);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<DailySalesDTO> getDailySales() {
+    LocalDate today = LocalDate.now();
+    LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+    LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
+
+    List<Sale> sales = saleRepository.findByDateBetween(
+        startOfWeek.atStartOfDay(),
+        endOfWeek.atTime(23, 59, 59));
+
+    Map<DayOfWeek, Double> grouped = sales.stream()
+        .collect(Collectors.groupingBy(
+            s -> s.getDate().getDayOfWeek(),
+            Collectors.summingDouble(Sale::getTotal)));
+
+    List<DailySalesDTO> daily = new ArrayList<>();
+    for (DayOfWeek day : DayOfWeek.values()) {
+      if (day.getValue() >= DayOfWeek.MONDAY.getValue() &&
+          day.getValue() <= DayOfWeek.SUNDAY.getValue()) {
+        daily.add(DailySalesDTO.builder()
+            .day(day.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
+            .sales(grouped.getOrDefault(day, 0.0))
+            .build());
+      }
+    }
+
+    return daily;
+  }
+
+  @Override
+  public Double getTotalSales() {
+    return saleRepository.findAll()
+        .stream()
+        .mapToDouble(Sale::getTotal)
+        .sum();
+  }
+
+  @Override
+  public List<ProductStockDTO> getLowStockProducts() {
+    return inventoryRepository.findAll()
+        .stream()
+        .filter(inv -> inv.getQuantity() <= inv.getProduct().getMinStock())
+        .map(inv -> new ProductStockDTO(inv.getProduct().getName(), inv.getQuantity()))
+        .toList();
   }
 }

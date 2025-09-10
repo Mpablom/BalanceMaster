@@ -1,5 +1,6 @@
 package com.BalanceMaster.gestor_ventas.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +30,6 @@ public interface PurchaseRepository extends JpaRepository<Purchase, String> {
       "LEFT JOIN FETCH pr.category " +
       "LEFT JOIN FETCH p.supplier")
   List<Purchase> findAllWithItems();
+
+  List<Purchase> findByDateBetween(LocalDateTime start, LocalDateTime end);
 }

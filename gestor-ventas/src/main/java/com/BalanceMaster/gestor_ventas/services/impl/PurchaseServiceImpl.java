@@ -1,9 +1,17 @@
 package com.BalanceMaster.gestor_ventas.services.impl;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.BalanceMaster.gestor_ventas.converters.PurchaseConverter;
+import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.DailyPurchaseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.*;
@@ -85,5 +93,43 @@ public class PurchaseServiceImpl implements PurchaseService {
     Purchase purchase = purchaseRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Purchase not found"));
     return purchaseConverter.toDTO(purchase);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<DailyPurchaseDTO> getDailyPurchases() {
+    LocalDate today = LocalDate.now();
+    LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+    LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
+
+    List<Purchase> purchases = purchaseRepository.findByDateBetween(
+        startOfWeek.atStartOfDay(),
+        endOfWeek.atTime(23, 59, 59));
+
+    Map<DayOfWeek, Double> grouped = purchases.stream()
+        .collect(Collectors.groupingBy(
+            p -> p.getDate().getDayOfWeek(),
+            Collectors.summingDouble(Purchase::getTotal)));
+
+    List<DailyPurchaseDTO> daily = new ArrayList<>();
+    for (DayOfWeek day : DayOfWeek.values()) {
+      if (day.getValue() >= DayOfWeek.MONDAY.getValue() &&
+          day.getValue() <= DayOfWeek.SUNDAY.getValue()) {
+        daily.add(DailyPurchaseDTO.builder()
+            .day(day.getDisplayName(TextStyle.SHORT, Locale.getDefault()))
+            .amount(grouped.getOrDefault(day, 0.0))
+            .build());
+      }
+    }
+
+    return daily;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public double getTotalPurchases() {
+    return purchaseRepository.findAll().stream()
+        .mapToDouble(Purchase::getTotal)
+        .sum();
   }
 }

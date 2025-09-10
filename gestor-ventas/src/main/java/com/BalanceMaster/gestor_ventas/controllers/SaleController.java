@@ -1,5 +1,8 @@
 package com.BalanceMaster.gestor_ventas.controllers;
 
+import java.util.List;
+
+import com.BalanceMaster.gestor_ventas.dtos.salesDtos.DailySalesDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.salesDtos.SaleResponseDTO;
 import com.BalanceMaster.gestor_ventas.services.SaleService;
@@ -32,5 +35,17 @@ public class SaleController {
   @GetMapping
   public ResponseEntity<Page<SaleResponseDTO>> getAllSales(Pageable pageable) {
     return ResponseEntity.ok(saleService.getAllSales(pageable));
+  }
+
+  @GetMapping("/daily")
+  public ResponseEntity<List<DailySalesDTO>> getDailySales() {
+    List<DailySalesDTO> data = saleService.getDailySales();
+    return ResponseEntity.ok(data);
+  }
+
+  @GetMapping("/total")
+  public ResponseEntity<Double> getTotalSales() {
+    double total = saleService.getTotalSales();
+    return ResponseEntity.ok(total);
   }
 }

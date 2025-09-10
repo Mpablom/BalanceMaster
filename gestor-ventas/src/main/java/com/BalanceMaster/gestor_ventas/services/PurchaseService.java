@@ -2,6 +2,7 @@ package com.BalanceMaster.gestor_ventas.services;
 
 import java.util.List;
 
+import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.DailyPurchaseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.purchaseDtos.PurchaseResponseDTO;
 
@@ -11,4 +12,8 @@ public interface PurchaseService {
   List<PurchaseResponseDTO> getAllPurchases();
 
   PurchaseResponseDTO findPurchaseById(String id);
+
+  List<DailyPurchaseDTO> getDailyPurchases();
+
+  double getTotalPurchases();
 }
