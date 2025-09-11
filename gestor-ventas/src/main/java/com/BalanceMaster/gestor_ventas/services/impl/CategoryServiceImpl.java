@@ -7,6 +7,7 @@ import com.BalanceMaster.gestor_ventas.dtos.categoryDtos.CategoryRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.categoryDtos.CategoryResponseDTO;
 import com.BalanceMaster.gestor_ventas.entities.Category;
 import com.BalanceMaster.gestor_ventas.repositories.CategoryRepository;
+import com.BalanceMaster.gestor_ventas.repositories.ProductRepository;
 import com.BalanceMaster.gestor_ventas.services.CategoryService;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryServiceImpl implements CategoryService {
   private final CategoryRepository categoryRepository;
   private final CategoryConverter categoryConverter;
+  private final ProductRepository productRepository;
 
   @Override
   @Transactional
@@ -63,6 +65,14 @@ public class CategoryServiceImpl implements CategoryService {
   public void deleteCategory(Long id) {
     Category category = categoryRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Category not found with id " + id));
+
+    long productCount = productRepository.countByCategoryId(id);
+    if (productCount > 0) {
+      throw new IllegalStateException(
+          "No se puede eliminar la categoría porque tiene productos asociados");
+    }
+
     categoryRepository.delete(category);
   }
+
 }

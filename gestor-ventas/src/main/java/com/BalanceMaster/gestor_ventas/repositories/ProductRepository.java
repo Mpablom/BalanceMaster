@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
   Page<Product> findAllByDeletedFalse(Pageable pageable);
+
+  Long countByCategoryId(Long categoryId);
 }

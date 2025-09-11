@@ -6,6 +6,8 @@ import com.BalanceMaster.gestor_ventas.dtos.categoryDtos.CategoryRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.categoryDtos.CategoryResponseDTO;
 import com.BalanceMaster.gestor_ventas.services.CategoryService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +40,13 @@ public class CategoryController {
   }
 
   @DeleteMapping("/{id}")
-  public void delete(@PathVariable Long id) {
-    categoryService.deleteCategory(id);
+  public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
+    try {
+      categoryService.deleteCategory(id);
+      return ResponseEntity.noContent().build();
+    } catch (IllegalStateException e) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
   }
+
 }
