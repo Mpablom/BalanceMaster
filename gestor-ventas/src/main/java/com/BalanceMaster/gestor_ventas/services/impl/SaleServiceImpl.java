@@ -40,7 +40,10 @@ public class SaleServiceImpl implements SaleService {
   @Override
   @Transactional
   public SaleResponseDTO createSale(SaleRequestDTO request) {
-    Customer customer = validationService.validateActiveCustomer(request.getCustomerId());
+    Customer customer = null;
+    if (request.getCustomerId() != null) {
+      customer = validationService.validateActiveCustomer(request.getCustomerId());
+    }
 
     Sale sale = saleConverter.toEntity(request);
     sale.setCustomer(customer);

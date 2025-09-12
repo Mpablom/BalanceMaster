@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class SaleRequestDTO {
-  @NotNull(message = "Customer ID is required")
   private Long customerId;
 
   @NotEmpty(message = "Items must not be empty")

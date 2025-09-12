@@ -24,15 +24,17 @@ public class SaleConverter {
   private final TransactionItemConverter transactionItemConverter;
 
   public Sale toEntity(SaleRequestDTO request) {
-    Customer customer = customerRepository.findById(request.getCustomerId())
-        .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
-
     Sale sale = new Sale();
-    sale.setCustomer(customer);
     sale.setDate(LocalDateTime.now());
     sale.setPaymentMethod(request.getPaymentMethod());
     sale.setAmountPaid(request.getAmountPaid());
     sale.setId("SALE-" + UUID.randomUUID());
+
+    if (request.getCustomerId() != null) {
+      Customer customer = customerRepository.findById(request.getCustomerId())
+          .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+      sale.setCustomer(customer);
+    }
 
     List<TransactionItem> items = request.getItems().stream()
         .map(itemsdto -> transactionItemConverter.toEntity(itemsdto, sale))

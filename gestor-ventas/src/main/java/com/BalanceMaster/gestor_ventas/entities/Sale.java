@@ -2,13 +2,7 @@ package com.BalanceMaster.gestor_ventas.entities;
 
 import com.BalanceMaster.gestor_ventas.enums.PaymentMethod;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "sale")
 public class Sale extends Transaction {
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "customer_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, optional = true)
+  @JoinColumn(name = "customer_id")
   private Customer customer;
 
   @Enumerated(EnumType.STRING)
