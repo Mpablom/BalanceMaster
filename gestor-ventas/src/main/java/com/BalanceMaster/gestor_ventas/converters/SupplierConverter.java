@@ -15,7 +15,8 @@ public class SupplierConverter implements Converter<Supplier, SupplierRequestDTO
       return null;
     return Supplier.builder()
         .name(dto.getName())
-        .contactInfo(dto.getContactInfo())
+        .phone(dto.getPhone())
+        .email(dto.getEmail())
         .deleted(false)
         .build();
   }
@@ -27,7 +28,8 @@ public class SupplierConverter implements Converter<Supplier, SupplierRequestDTO
     return SupplierResponseDTO.builder()
         .id(supplier.getId())
         .name(supplier.getName())
-        .contactInfo(supplier.getContactInfo())
+        .phone(supplier.getPhone())
+        .email(supplier.getEmail())
         .build();
   }
 }

@@ -36,7 +36,8 @@ public class SupplierServiceImpl implements SupplierService {
         .filter(s -> !s.getDeleted())
         .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
     supplier.setName(dto.getName());
-    supplier.setContactInfo(dto.getContactInfo());
+    supplier.setPhone(dto.getPhone());
+    supplier.setEmail(dto.getEmail());
     return supplierConverter.toDTO(supplier);
   }
 

@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 public class SupplierRequestDTO {
   @NotBlank(message = "Name must not be blank")
   private String name;
-  private String contactInfo;
-  private String email;
   private String phone;
-  private String address;
+  private String email;
 }

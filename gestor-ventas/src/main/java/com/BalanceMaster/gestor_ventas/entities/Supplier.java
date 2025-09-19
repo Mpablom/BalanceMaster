@@ -23,7 +23,10 @@ public class Supplier {
   private String name;
 
   @Column(name = "contact_info")
-  private String contactInfo;
+  private String phone;
+
+  @Column(name = "email")
+  private String email;
 
   @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
   private SupplierAccount account;
