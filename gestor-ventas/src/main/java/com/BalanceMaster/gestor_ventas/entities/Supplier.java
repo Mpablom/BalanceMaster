@@ -22,7 +22,7 @@ public class Supplier {
   @Column(nullable = false)
   private String name;
 
-  @Column(name = "contact_info")
+  @Column(name = "phone")
   private String phone;
 
   @Column(name = "email")
