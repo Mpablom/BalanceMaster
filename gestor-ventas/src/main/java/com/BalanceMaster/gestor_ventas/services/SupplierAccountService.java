@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.services;
 
+import java.util.List;
+
 import com.BalanceMaster.gestor_ventas.dtos.movementsDtos.MovementRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.suppliersAccountsDtos.SupplierAccountRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.suppliersAccountsDtos.SupplierAccountResponseDTO;
@@ -15,4 +17,6 @@ public interface SupplierAccountService {
   SupplierAccountResponseDTO addMovement(Long supplierId, MovementRequestDTO request);
 
   void deleteSupplierAccount(Long supplierId);
+
+  List<SupplierAccountResponseDTO> getAll();
 }

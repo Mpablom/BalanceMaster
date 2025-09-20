@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.services;
 
+import java.util.List;
+
 import com.BalanceMaster.gestor_ventas.dtos.customersAccountsDtos.CustomerAccountRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.customersAccountsDtos.CustomerAccountResponseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.movementsDtos.MovementRequestDTO;
@@ -15,4 +17,6 @@ public interface CustomerAccountService {
   CustomerAccountResponseDTO updateAccount(Long customerId, CustomerAccountRequestDTO request);
 
   void deleteAccount(Long customerId);
+
+  List<CustomerAccountResponseDTO> findAll();
 }

@@ -3,6 +3,7 @@ package com.BalanceMaster.gestor_ventas.services.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.BalanceMaster.gestor_ventas.converters.SupplierAccountConverter;
 import com.BalanceMaster.gestor_ventas.dtos.movementsDtos.MovementRequestDTO;
@@ -118,5 +119,13 @@ public class SupplierAccountServiceImpl implements SupplierAccountService {
 
     movementsRepository.deleteAll(account.getMovements());
     supplierAccountRepository.delete(account);
+  }
+
+  @Override
+  public List<SupplierAccountResponseDTO> getAll() {
+    return supplierAccountRepository.findAll()
+        .stream()
+        .map(supplierAccountConverter::toDTO)
+        .toList();
   }
 }

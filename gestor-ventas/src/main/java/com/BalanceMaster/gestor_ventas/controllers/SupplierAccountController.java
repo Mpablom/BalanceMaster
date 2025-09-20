@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.controllers;
 
+import java.util.List;
+
 import com.BalanceMaster.gestor_ventas.dtos.movementsDtos.MovementRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.suppliersAccountsDtos.SupplierAccountRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.suppliersAccountsDtos.SupplierAccountResponseDTO;
@@ -22,6 +24,12 @@ public class SupplierAccountController {
   public ResponseEntity<SupplierAccountResponseDTO> createSupplierAccount(
       @RequestBody @Valid SupplierAccountRequestDTO request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(supplierAccountService.createSupplierAccount(request));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<SupplierAccountResponseDTO>> listAll() {
+    List<SupplierAccountResponseDTO> accounts = supplierAccountService.getAll();
+    return ResponseEntity.ok(accounts);
   }
 
   @GetMapping("/{supplierId}")

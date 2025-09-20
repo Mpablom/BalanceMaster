@@ -1,5 +1,7 @@
 package com.BalanceMaster.gestor_ventas.controllers;
 
+import java.util.List;
+
 import com.BalanceMaster.gestor_ventas.dtos.customersAccountsDtos.CustomerAccountRequestDTO;
 import com.BalanceMaster.gestor_ventas.dtos.customersAccountsDtos.CustomerAccountResponseDTO;
 import com.BalanceMaster.gestor_ventas.dtos.movementsDtos.MovementRequestDTO;
@@ -22,6 +24,12 @@ public class CustomerAccountController {
   public ResponseEntity<CustomerAccountResponseDTO> createCustomerAccount(
       @Valid @RequestBody CustomerAccountRequestDTO request) {
     return ResponseEntity.ok(customerAccountService.createAccount(request));
+  }
+
+  @GetMapping
+  public ResponseEntity<List<CustomerAccountResponseDTO>> listAll() {
+    List<CustomerAccountResponseDTO> accounts = customerAccountService.findAll();
+    return ResponseEntity.ok(accounts);
   }
 
   @PutMapping("/{customerId}")

@@ -3,6 +3,7 @@ package com.BalanceMaster.gestor_ventas.services.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.BalanceMaster.gestor_ventas.converters.CustomerAccountConverter;
 import com.BalanceMaster.gestor_ventas.dtos.customersAccountsDtos.CustomerAccountRequestDTO;
@@ -132,5 +133,13 @@ public class CustomerAccountServiceImpl implements CustomerAccountService {
     movementsRepository.save(movement);
 
     return customerAccountConverter.toDTO(customerAccount);
+  }
+
+  @Override
+  public List<CustomerAccountResponseDTO> findAll() {
+    return customerAccountRepository.findAll()
+        .stream()
+        .map(customerAccountConverter::toDTO)
+        .toList();
   }
 }
