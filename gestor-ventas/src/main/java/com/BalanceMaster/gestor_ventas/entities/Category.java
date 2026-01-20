@@ -1,7 +1,6 @@
 package com.BalanceMaster.gestor_ventas.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
