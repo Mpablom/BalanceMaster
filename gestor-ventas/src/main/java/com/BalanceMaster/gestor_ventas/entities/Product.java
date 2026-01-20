@@ -1,8 +1,8 @@
 package com.BalanceMaster.gestor_ventas.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Data
@@ -29,6 +29,9 @@ public class Product {
   @Column(name = "purchase_price", nullable = false)
   private double purchasePrice;
 
+  @NotNull(message = "Minimum stock is required")
+  @Min(value = 0, message = "Minimum stock cannot be negative")
+  @Max(value = 999999, message = "Minimum stock cannot exceed 999,999")
   @Column(nullable = false)
   private Integer minStock;
 
@@ -36,13 +39,13 @@ public class Product {
   @Builder.Default
   private Boolean deleted = false;
 
-  @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JsonManagedReference
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
   private Inventory inventory;
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "category_id", referencedColumnName = "id")
   @ToString.Exclude
   @EqualsAndHashCode.Exclude
@@ -52,7 +55,7 @@ public class Product {
   public double getSalePrice() {
     if (category == null)
       return purchasePrice;
-    return purchasePrice * (1 + category.getMarginPercentage());
+    return purchasePrice * (1 + (category.getMarginPercentage() != null ? category.getMarginPercentage() : 0.0));
   }
 
   @Transient
